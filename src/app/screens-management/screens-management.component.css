@@ -1,0 +1,13 @@
+.edit-icon-link {
+  color: #1890ff;
+  cursor: pointer;
+}
+
+.delete-icon-link {
+  color: #d9363e;
+  cursor: pointer;
+}
+
+.clickable {
+  cursor: pointer;
+}

@@ -1,0 +1,10 @@
+<nz-card nzTitle="Screens">
+
+  <!-- screens grid card -->
+  <nz-spin  [nzSpinning]="isScreensLoading">
+  <div nz-card-grid [ngStyle]="gridStyle" *ngFor="let screen of screensList" (click)="screenDetails(screen)">
+    <a>{{screen.title}}</a>
+  </div>
+</nz-spin>
+</nz-card>
+

@@ -1,0 +1,55 @@
+<nz-card [nzTitle]="screen.title"  [nzExtra]="timer" [nzActions]="[startBtn, stopBtn, addElement]">
+    <!-- screens grid card -->
+    <nz-spin  [nzSpinning]="!isDataLoaded">
+    <div *ngIf="dataElementRecords > 0">
+      <div nz-card-grid [ngStyle]="gridStyle" *ngFor="let element of dataElements" (click)="elementDetails(screen)">
+        <a>{{element.value}}</a>
+      </div>
+  </div>
+
+  <!-- if no data -->
+  <div *ngIf="dataElementRecords == 0">
+    <nz-empty nzNotFoundImage="simple"></nz-empty>
+  </div>
+  </nz-spin>
+
+</nz-card>
+
+  <!-- back arrow -->
+  <div nz-row>
+    <nz-page-header class="site-page-header"  (nzBack)="onBack()" nzBackIcon nzTitle="Back" >
+    </nz-page-header>
+  </div>
+
+<!-- timer  -->
+<ng-template #timer>
+  <nz-countdown [nzValue]="timerValue" [nzTitle]="'Time Left'"  [nzFormat]="'HH:mm:ss'"></nz-countdown>
+</ng-template>
+
+<!-- start btn -->
+<ng-template #startBtn>
+  <button nz-button nzType="default" (click)="startTimer()" [nzLoading]="isStart"> Start</button>
+</ng-template>
+
+<!-- stop btn -->
+<ng-template #stopBtn>
+  <button nz-button nzType="default" (click)="stopTimer()" [nzLoading]="isStop"> Stop</button>
+</ng-template>
+
+<!-- add elements -->
+<ng-template #addElement>
+  <button nz-button nzType="default" (click)="showModal('Add')"> Add Elements</button>
+</ng-template>
+
+<!-- modal element -->
+<app-screen-modal
+[isModal]="isModal"
+[action]="action"
+[element]="dataElement"
+[screenId]="screen.id"
+(closeModal)="closeModal($event)"
+(elementCreated)="elementCreated($event)"
+>
+</app-screen-modal>
+
+
