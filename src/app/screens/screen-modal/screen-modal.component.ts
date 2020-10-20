@@ -49,15 +49,15 @@ export class ScreenModalComponent implements OnInit {
       /* set bool */
       this.isBtnPressed = true;
 
+          /* paylaod */
+    const payload = {
+      "readingScreenId": this.screenId,
+      "value": this.elementForm.controls['value'].value,
+      "id": this.dataElement.id
+    }
+
      /* create data element */
-     if(this.action == 'Add'){
-        this.createDataElement()
-     }
-
-     /* update element */
-     else if(this.action == 'Update'){
-
-     }
+     if(this.action == 'Add'){this.createDataElement(payload)}else if(this.action == 'Update'){this.updateDataElement(payload)}
 
     }
   }
@@ -74,18 +74,27 @@ export class ScreenModalComponent implements OnInit {
   }
 
   /* create data element */
-  createDataElement(){
-
-    /* paylaod */
-    const payload = {
-      "readingScreenId": this.screenId,
-      "value": this.elementForm.controls['value'].value
-    }
-
+  createDataElement(payload: any){
     /* send request */
     this.elementService.createDataElement(payload).subscribe((res)=>{
-      if(Object.values(res)[0] == "success" && Object.values(res)[1] == 201){
-        this.message.success(Object.values(res)[4], {nzDuration: 5000})
+      const resObj = Object.values(res)
+      if(resObj[1] == 201){
+        this.message.success(resObj[4], {nzDuration: 5000})
+        this.isBtnPressed = false;
+        this.handleCancel()
+        this.elementCreated.emit(true)
+      }
+   })
+  }
+
+
+  /* update data element */
+  updateDataElement(payload: any){
+    /* send request */
+    this.elementService.updateDataElement(payload).subscribe((res)=>{
+      const resObj = Object.values(res)
+      if(resObj[1] == 200){
+        this.message.success(resObj[4], {nzDuration: 5000})
         this.isBtnPressed = false;
         this.handleCancel()
         this.elementCreated.emit(true)

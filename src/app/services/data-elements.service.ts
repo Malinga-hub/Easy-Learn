@@ -30,4 +30,16 @@ export class DataElementsService {
       })
     )
   }
+
+    /* update data element */
+    updateDataElement(payload: any){
+      return this.http.post(`${BASE_URL}/dataElements/update.php`, payload, {headers: HEADERS}).pipe(
+        retry(3),
+        catchError(()=>{
+          return this.router.navigateByUrl('/connectionFailed')
+        })
+      )
+    }
+
+
 }

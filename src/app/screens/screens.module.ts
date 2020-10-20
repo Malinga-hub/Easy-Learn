@@ -16,6 +16,14 @@ import  { ReactiveFormsModule} from '@angular/forms'
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 
 
 @NgModule({
@@ -34,7 +42,15 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
     ReactiveFormsModule,
     NzInputModule,
     NzSpinModule,
-    NzMessageModule
+    NzMessageModule,
+    NzTableModule,
+    NzIconModule,
+    NzDividerModule,
+    NzToolTipModule,
+    NzPopconfirmModule,
+    NzDescriptionsModule,
+    NgxPaginationModule,
+    NzTimePickerModule
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

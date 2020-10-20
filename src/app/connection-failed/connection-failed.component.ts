@@ -12,13 +12,19 @@ export class ConnectionFailedComponent implements OnInit {
 
   /* bools */
   isBackClick: boolean = false;
+  isLoaded: boolean = false
 
   ngOnInit(): void {
+
+    setTimeout(()=>{
+      this.isLoaded = true
+    }, 1000)
   }
 
   /* go home */
   goHome(){
     this.isBackClick = true
+    this.isLoaded = false
     setTimeout(() => {
       this.router.navigateByUrl('')
     }, 1000)

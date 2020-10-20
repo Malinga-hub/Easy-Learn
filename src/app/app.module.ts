@@ -32,6 +32,9 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 
 
 registerLocaleData(en);
@@ -68,7 +71,10 @@ registerLocaleData(en);
     NzDividerModule,
     NzToolTipModule,
     NzPopconfirmModule,
-    NzDescriptionsModule
+    NzDescriptionsModule,
+    NzPaginationModule,
+    NgxPaginationModule,
+    NzTimePickerModule
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],

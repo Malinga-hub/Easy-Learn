@@ -23,6 +23,9 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { ScreenDetailsComponent } from './screen-details/screen-details.component';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 
 
 
@@ -48,7 +51,10 @@ import { ScreenDetailsComponent } from './screen-details/screen-details.componen
     NzDividerModule,
     NzToolTipModule,
     NzPopconfirmModule,
-    NzDescriptionsModule
+    NzDescriptionsModule,
+    NzPaginationModule,
+    NgxPaginationModule,
+    NzTimePickerModule
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

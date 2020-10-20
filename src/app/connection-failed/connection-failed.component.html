@@ -1,5 +1,7 @@
-<nz-result nzStatus="" nzTitle="502" nzSubTitle="Error reaching the server.Please ensure you are connected to the internet">
+<nz-spin [nzSpinning]="!isLoaded">
+<nz-result nzStatus="" nzTitle="500" nzSubTitle="Internal Server Error">
   <div nz-result-extra>
     <button nz-button nzType="default" (click)="goHome()" [nzLoading]="isBackClick">Back Home</button>
   </div>
 </nz-result>
+</nz-spin>

@@ -1,55 +1,76 @@
-<nz-card [nzTitle]="screen.title"  [nzExtra]="timer" [nzActions]="[startBtn, stopBtn, addElement]">
-    <!-- screens grid card -->
-    <nz-spin  [nzSpinning]="!isDataLoaded">
-    <div *ngIf="dataElementRecords > 0">
-      <div nz-card-grid [ngStyle]="gridStyle" *ngFor="let element of dataElements" (click)="elementDetails(screen)">
-        <a>{{element.value}}</a>
-      </div>
-  </div>
-
-  <!-- if no data -->
-  <div *ngIf="dataElementRecords == 0">
-    <nz-empty nzNotFoundImage="simple"></nz-empty>
-  </div>
+<!-- page headers  -->
+<nz-spin [nzSpinning]="!isDataLoaded">
+  <nz-card nzHoverable>
+  <nz-page-header  class="site-page-header"(nzBack)="onBack()" nzBackIcon>
+    <!-- title -->
+    <nz-page-header-title>{{screen.title}}</nz-page-header-title>
+    <!-- add btn -->
+    <nz-page-header-extra>
+      <button nz-button nzType="primary" (click)="showModal('Add', {})">Add Element <i nz-icon nzType="plus" nzTheme="outline"></i></button>
+      <button nz-button nzType="default" (click)="reloadPage()" [nzLoading]="isReloading">Reload <i nz-icon nzType="reload" nzTheme="outline"></i></button>
+    </nz-page-header-extra>
+    <!-- screen stats -->
+    <nz-page-header-content>
+      <nz-row nzType="flex">
+        <nz-statistic nzTitle="Total Records" [nzValue]="dataElementRecords" style="margin-right: 20px;"></nz-statistic>
+        <!-- count down -->
+        <nz-countdown [nzValue]="timerValue" [nzTitle]="'Time Left (HH:mm:ss)'"  [nzFormat]="'HH:mm:ss'" (nzCountdownFinish)="countDownDone()" ></nz-countdown>
+      </nz-row>
+    </nz-page-header-content>
+  </nz-page-header>
+  </nz-card>
   </nz-spin>
+  <br/>
 
-</nz-card>
-
-  <!-- back arrow -->
-  <div nz-row>
-    <nz-page-header class="site-page-header"  (nzBack)="onBack()" nzBackIcon nzTitle="Back" >
-    </nz-page-header>
-  </div>
-
-<!-- timer  -->
-<ng-template #timer>
-  <nz-countdown [nzValue]="timerValue" [nzTitle]="'Time Left'"  [nzFormat]="'HH:mm:ss'"></nz-countdown>
-</ng-template>
-
-<!-- start btn -->
-<ng-template #startBtn>
-  <button nz-button nzType="default" (click)="startTimer()" [nzLoading]="isStart"> Start</button>
-</ng-template>
-
-<!-- stop btn -->
-<ng-template #stopBtn>
-  <button nz-button nzType="default" (click)="stopTimer()" [nzLoading]="isStop"> Stop</button>
-</ng-template>
-
-<!-- add elements -->
-<ng-template #addElement>
-  <button nz-button nzType="default" (click)="showModal('Add')"> Add Elements</button>
-</ng-template>
+  <!-- data elements -->
+  <nz-spin [nzSpinning]="!isDataLoaded">
+    <nz-card [nzExtra]="btnActions">
+        <div nz-card-grid [ngStyle]="gridStyle" *ngFor="let data of dataElements" class="clickable" (click)="showModal('Update', data)">{{data.value}}</div>
+    </nz-card>
+    <ng-template #btnActions>
+      <button nz-button nzType="default" (click)="showTimerModal()" style="margin-right: 10px;" class="green-btn">Start</button>
+      <button nz-button nzType="default" (click)="stopTimer()" [nzLoading]="isStop" class="red-btn">Stop</button>
+    </ng-template>
+  </nz-spin>
 
 <!-- modal element -->
 <app-screen-modal
+*ngIf="isModal"
 [isModal]="isModal"
 [action]="action"
-[element]="dataElement"
+[dataElement]="dataElement"
 [screenId]="screen.id"
 (closeModal)="closeModal($event)"
 (elementCreated)="elementCreated($event)"
 >
 </app-screen-modal>
 
+
+<!-- set timer modal -->
+<nz-modal [(nzVisible)]="isTimerModal" nzTitle="Set Timer" (nzOnCancel)="timerHandleCancel()" (nzOnOk)="timerHandleOk()"  [nzOkLoading]="isSettingTimer">
+  <form nz-form [formGroup]="timerForm" >
+
+    <!-- hours -->
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="hourValue">Hours</nz-form-label>
+      <nz-form-control  [nzSm]="14" [nzXs]="24">
+          <input nz-input formControlName="hourValue" placeholder="Hour" type="number" [ngModel]="1"  />
+      </nz-form-control>
+    </nz-form-item>
+        <!-- mins -->
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="minValue">Minutes</nz-form-label>
+          <nz-form-control  [nzSm]="14" [nzXs]="24">
+              <input  nz-input formControlName="minValue" placeholder="Minutes"type="number" [ngModel]="0"  />
+          </nz-form-control>
+        </nz-form-item>
+            <!-- seconds -->
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="secValue">Seconds</nz-form-label>
+      <nz-form-control   [nzSm]="14" [nzXs]="24">
+          <input  nz-input formControlName="secValue" placeholder="Seconds" type="number" [ngModel]="0"  />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
 

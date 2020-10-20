@@ -81,13 +81,19 @@ export class ActionModalComponent implements OnInit {
   addReadingScreen(payload: any){
     this.screenService.addReadingScreen(payload).subscribe((res) => {
       console.log("screen action ==> ",res)
-      const resObj = Object.values(res);
-      if(resObj[1] == 201){
-        this.message.success(resObj[3], {nzDuration: 5000})
-        this.isBtnPressed = false
-        this.isActionComplete.emit(true)
-        this.handleCancel()
+      if(res != -1){
+        const resObj = Object.values(res);
+        if(resObj[1] == 201){
+          this.message.success(resObj[3], {nzDuration: 5000})
+          this.isBtnPressed = false
+          this.isActionComplete.emit(true)
+          this.handleCancel()
+        }
       }
+      else{
+        this.isBtnPressed = false
+      }
+
     })
   }
 

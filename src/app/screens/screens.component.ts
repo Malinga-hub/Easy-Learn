@@ -10,11 +10,13 @@ import {Router} from '@angular/router'
 export class ScreensComponent implements OnInit {
 
   /* set values */
-  screens: any = ['hello', 'hello', 'hello', 'hello','hello', 'hello', 'hello', 'hello'];
   screensList: any;
+  screensRecords: number = 0
+  pageConfig: any;
 
   /* bools */
-  isScreensLoading: boolean = true
+  isDataLoaded: boolean = false
+  isReloading = false;
 
   constructor(private service: ScreensService, private router: Router) { }
 
@@ -27,16 +29,39 @@ export class ScreensComponent implements OnInit {
   /* get all screens */
   getAllScreens(){
     this.service.getAllScreens().subscribe((res)=>{
-      this.screensList = Object.values(res)[3]
-      this.isScreensLoading = false
+      const resObj = Object.values(res)
+      this.screensRecords = resObj[2]
+      this.screensList = resObj[3]
+      this.screensList.reverse()
+      this.isDataLoaded= true
+      this.isReloading = false
+      /* config page */
+      this.pageConfig = {
+        itemsPerPage:9,
+        currentPage: 1,
+        totalItems: this.screensRecords
+      };
       console.log("screens ==> ", this.screensList)
     })
   }
 
   /* get screen details */
-  screenDetails(screen: any){
-    localStorage.setItem('screen', JSON.stringify(screen))
+  screenDetails(data: any){
+    localStorage.setItem('exercise', JSON.stringify(data))
     this.router.navigateByUrl('/screens/details')
+  }
+
+  /* reload page */
+  reloadPage(){
+    this.isDataLoaded = false;
+    this.isReloading = true
+    this.getAllScreens()
+  }
+
+  /* page change */
+  pageChanged(page: any){
+    console.log("page changed: ",page)
+    this.pageConfig.currentPage = page;
   }
 
 

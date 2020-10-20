@@ -1,20 +1,9 @@
 <nz-modal [(nzVisible)]="isModal" [nzTitle]="action + ' Element'"
 [nzFooter]="modalFooter">
   <form nz-form [formGroup]="elementForm" >
-    <nz-form-item *ngIf="action == 'Add'">
+    <nz-form-item>
       <nz-form-control [nzErrorTip]="valueErrorTip">
-          <textarea rows="4" nz-input formControlName="value" placeholder="Element Value"></textarea>
-      </nz-form-control>
-      <ng-template #valueErrorTip let-control>
-        <ng-container *ngIf="control.hasError('required')">
-          Value is required
-        </ng-container>
-      </ng-template>
-    </nz-form-item>
-
-    <nz-form-item *ngIf="action == 'Update'">
-      <nz-form-control [nzErrorTip]="valueErrorTip">
-          <textarea rows="4" nz-input formControlName="value" placeholder="Element Value" [ngModel]="dataElement"></textarea>
+          <textarea rows="4" nz-input formControlName="value" placeholder="Element Value" [ngModel]="dataElement.value"></textarea>
       </nz-form-control>
       <ng-template #valueErrorTip let-control>
         <ng-container *ngIf="control.hasError('required')">
@@ -28,7 +17,7 @@
   <ng-template #modalFooter>
     <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
     <button nz-button nzType="default" nzType="danger" (click)="handleDelete()" *ngIf="action ==  'Update'">Delete</button>
-    <button nz-button nzType="default" nzType="primary" (click)="handleOk()" [nzLoading]="isBtnPressed">Add</button>
+    <button nz-button nzType="default" nzType="primary" (click)="handleOk()" [nzLoading]="isBtnPressed" *ngIf="action == 'Add'">Add</button>
     <button nz-button nzType="default" nzType="primary" (click)="handleOk()" [nzLoading]="isBtnPressed" *ngIf="action ==  'Update'">Update</button>
   </ng-template>
 
