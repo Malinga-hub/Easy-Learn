@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ScreensService} from '../services/screens.service'
+import {ScreensManagementService} from '../services/screens-management.service'
 import {Router} from '@angular/router'
 
 @Component({
@@ -13,17 +14,21 @@ export class ScreensComponent implements OnInit {
   screensList: any;
   screensRecords: number = 0
   pageConfig: any;
+  exerciseTypes: any
 
   /* bools */
   isDataLoaded: boolean = false
   isReloading = false;
 
-  constructor(private service: ScreensService, private router: Router) { }
+  constructor(private service: ScreensService, private router: Router, private managementService: ScreensManagementService) { }
 
   ngOnInit(): void {
 
     /* get all screens */
     this.getAllScreens()
+
+    /* get execise types */
+    this.getExerciseTypes()
   }
 
   /* get all screens */
@@ -56,12 +61,36 @@ export class ScreensComponent implements OnInit {
     this.isDataLoaded = false;
     this.isReloading = true
     this.getAllScreens()
+    this.getExerciseTypes()
   }
 
   /* page change */
   pageChanged(page: any){
     console.log("page changed: ",page)
     this.pageConfig.currentPage = page;
+  }
+
+    /* get exercise types */
+    getExerciseTypes(){
+
+      this.managementService.getExerciseTypes().subscribe((res) => {
+        if(res != -1){
+          console.log("types ==> ",res)
+          const resObj = Object.values(res)
+          this.exerciseTypes = resObj[3]
+        }
+
+      })
+  }
+
+  /* get type name */
+  getType(id: number){
+    if(this.exerciseTypes != null){
+      const data = this.exerciseTypes.filter((exercise) => {
+        return exercise.id == id
+      })
+      return data[0].title
+    }
   }
 
 

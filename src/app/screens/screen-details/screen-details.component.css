@@ -1,11 +1,16 @@
 .green-btn {
   background: #34880a;
-  color: white;
+  color: #34880a;
   border-color: #34880a;
 }
 
 .red-btn {
   background: #ff4d4f;
-  color: white;
+  color: #ff4d4f;
   border-color: #ff4d4f;
+}
+
+.greenBtn {
+  border-color: #18a301;
+  color: #18a301;
 }

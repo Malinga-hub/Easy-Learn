@@ -16,8 +16,15 @@ export class ScreensManagementService {
   getAllReadingScreen(){
     return this.http.get(`${BASE_URL}/readingScreen/all.php`, {headers: HEADERS}).pipe(
       retry(3),
-      catchError(() => {
-        return this.router.navigateByUrl('/connectionFailed')
+      catchError((res) => {
+        const resObj = Object.values(res.error)
+        if(resObj[1] != 500){
+          this.message.error(resObj[2].toString(), {nzDuration: 5000})
+          return [-1]
+        }
+        else{
+          return this.router.navigateByUrl('/connectionFailed')
+        }
       })
     )
   }
@@ -28,9 +35,8 @@ export class ScreensManagementService {
       retry(3),
       catchError((res) => {
         const resObj = Object.values(res.error)
-        if(resObj[1] == 400 || resObj[1] == 404){
+        if(resObj[1] != 500){
           this.message.error(resObj[2].toString(), {nzDuration: 5000})
-          console.log("returning error ==> ")
           return [-1]
         }
         else{
@@ -44,8 +50,15 @@ export class ScreensManagementService {
   updateReadingScreen(payload: any){
     return this.http.post(`${BASE_URL}/readingScreen/update.php`, payload, {headers: HEADERS}).pipe(
       retry(3),
-      catchError(() => {
-        return this.router.navigateByUrl('/connectionFailed')
+      catchError((res) => {
+        const resObj = Object.values(res.error)
+        if(resObj[1] != 500){
+          this.message.error(resObj[2].toString(), {nzDuration: 5000})
+          return [-1]
+        }
+        else{
+          return this.router.navigateByUrl('/connectionFailed')
+        }
       })
     )
   }
@@ -54,9 +67,33 @@ export class ScreensManagementService {
     deleteReadingScreen(payload: any){
       return this.http.post(`${BASE_URL}/readingScreen/delete.php`, payload, {headers: HEADERS}).pipe(
         retry(3),
-        catchError(() => {
-          return this.router.navigateByUrl('/connectionFailed')
+        catchError((res) => {
+          const resObj = Object.values(res.error)
+          if(resObj[1] != 500 ){
+            this.message.error(resObj[2].toString(), {nzDuration: 5000})
+            return [-1]
+          }
+          else{
+            return this.router.navigateByUrl('/connectionFailed')
+          }
         })
       )
     }
+
+  /* delete reading screen */
+  getExerciseTypes(){
+    return this.http.get(`${BASE_URL}/exercise_type/all.php`, {headers: HEADERS}).pipe(
+      retry(3),
+      catchError((res) => {
+        const resObj = Object.values(res.error)
+        if(resObj[1] != 500){
+          this.message.error(resObj[2].toString(), {nzDuration: 5000})
+          return [-1]
+        }
+        else{
+          return this.router.navigateByUrl('/connectionFailed')
+        }
+      })
+    )
+  }
 }

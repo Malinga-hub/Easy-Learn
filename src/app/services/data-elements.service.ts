@@ -3,13 +3,14 @@ import {Router} from '@angular/router'
 import {HttpClient} from '@angular/common/http'
 import {BASE_URL, HEADERS} from '../config/appConfig'
 import { catchError, map, retry } from 'rxjs/operators';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataElementsService {
 
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(private router: Router, private http: HttpClient, private message: NzMessageService) { }
 
   /* get all reading screen data elements */
   getAllDataElements(payload: any){
@@ -40,6 +41,23 @@ export class DataElementsService {
         })
       )
     }
+
+        /* delete  data element */
+        deleteDataElement(payload: any){
+          return this.http.post(`${BASE_URL}/dataElements/delete.php`, payload, {headers: HEADERS}).pipe(
+            retry(3),
+            catchError((res) => {
+              const resObj = Object.values(res.error)
+              if(resObj[1] != 500 ){
+                this.message.error(resObj[2].toString(), {nzDuration: 5000})
+                return [-1]
+              }
+              else{
+                return this.router.navigateByUrl('/connectionFailed')
+              }
+            })
+          )
+        }
 
 
 }

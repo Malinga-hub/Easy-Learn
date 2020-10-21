@@ -24,6 +24,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 
 @NgModule({
@@ -50,7 +52,9 @@ import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
     NzPopconfirmModule,
     NzDescriptionsModule,
     NgxPaginationModule,
-    NzTimePickerModule
+    NzTimePickerModule,
+    NzTabsModule,
+    NzSelectModule
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

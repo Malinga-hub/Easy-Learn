@@ -12,6 +12,14 @@
         </ng-container>
       </ng-template>
     </nz-form-item>
+    <!-- exercise type -->
+    <nz-form-item>
+      <nz-form-control [nzErrorTip]="'Select type'">
+        <nz-select nzPlaceHolder="Select type" formControlName="type_id">
+          <nz-option *ngFor="let type of exerciseTypes" nzLabel="{{type.title}}" nzValue="{{type.id}}"></nz-option>>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
     <!-- description -->
     <nz-form-item >
       <nz-form-control>

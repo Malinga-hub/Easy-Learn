@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ScreensManagementComponent } from './screens-management.component';
 import {ScreenDetailsComponent} from './screen-details/screen-details.component'
+import {AuthGuard} from '../guards/auth.guard'
 
 
 const routes: Routes = [

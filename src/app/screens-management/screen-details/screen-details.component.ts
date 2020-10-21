@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {DataElementsService} from '../../services/data-elements.service'
+import {ScreensManagementService} from '../../services/screens-management.service'
 import {Router} from '@angular/router'
 
 @Component({
@@ -13,11 +14,12 @@ export class ScreenDetailsComponent implements OnInit {
   screenData: any
   dataElementRecords: number = 0;
   dataElements: any;
+  exerciseTypes: any
 
   /* set bools */
   isDataLoaded: boolean = false
 
-  constructor(private dataElementService: DataElementsService, private router: Router) { }
+  constructor(private dataElementService: DataElementsService, private router: Router, private screenService: ScreensManagementService) { }
 
   ngOnInit(): void {
 
@@ -26,27 +28,53 @@ export class ScreenDetailsComponent implements OnInit {
 
     /* get all screen data elements */
     this.getAllScreenDataElements()
+
+    /* get exercise types */
+    this.getExerciseTypes()
   }
 
   /* get screen data elements */
   getAllScreenDataElements(){
     const payload = {
-      "readingScreenId": this.screenData.id
+      "exercise_id": this.screenData.id
     }
 
     /* get all data elements */
     this.dataElementService.getAllDataElements(payload).subscribe((res) => {
       const resObj = Object.values(res);
-      if(resObj[1] == 200){
+      if(res != -1){
         this.dataElementRecords = resObj[2]
         this.dataElements = resObj[3]
-        this.isDataLoaded = true
       }
+      /* default */
+      this.isDataLoaded = true
     })
   }
 
   /* on back */
   onBack(){
     this.router.navigateByUrl('/screens-management')
+  }
+    /* get exercise types */
+    getExerciseTypes(){
+
+      this.screenService.getExerciseTypes().subscribe((res) => {
+        if(res != -1){
+          console.log("types ==> ",res)
+          const resObj = Object.values(res)
+          this.exerciseTypes = resObj[3]
+        }
+
+      })
+  }
+
+  /* get type name */
+  getType(id: number){
+    if(this.exerciseTypes != null){
+      const data = this.exerciseTypes.filter((exercise) => {
+        return exercise.id == id
+      })
+      return data[0].title
+    }
   }
 }

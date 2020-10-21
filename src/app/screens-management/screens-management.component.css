@@ -11,3 +11,8 @@
 .clickable {
   cursor: pointer;
 }
+
+.greenBtn {
+  border-color: #18a301;
+  color: #18a301;
+}

@@ -26,6 +26,8 @@ import { ScreenDetailsComponent } from './screen-details/screen-details.componen
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 
 
@@ -54,7 +56,9 @@ import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
     NzDescriptionsModule,
     NzPaginationModule,
     NgxPaginationModule,
-    NzTimePickerModule
+    NzTimePickerModule,
+    NzTabsModule,
+    NzSelectModule
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

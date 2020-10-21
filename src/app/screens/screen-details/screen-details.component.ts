@@ -73,7 +73,7 @@ export class ScreenDetailsComponent implements OnInit {
 
     /* payload */
     const payload = {
-      readingScreenId: this.screen.id
+      exercise_id: this.screen.id
     }
 
     /* get data elements */

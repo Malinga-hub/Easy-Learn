@@ -35,6 +35,11 @@ import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
+import { LoginComponent } from './login/login.component';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 
 registerLocaleData(en);
@@ -43,7 +48,8 @@ registerLocaleData(en);
   declarations: [
     AppComponent,
     NavigationComponent,
-    ConnectionFailedComponent
+    ConnectionFailedComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -74,7 +80,11 @@ registerLocaleData(en);
     NzDescriptionsModule,
     NzPaginationModule,
     NgxPaginationModule,
-    NzTimePickerModule
+    NzTimePickerModule,
+    NzTabsModule,
+    NzDrawerModule,
+    NzCheckboxModule,
+    NzSelectModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],

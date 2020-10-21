@@ -14,6 +14,7 @@ export class ActionModalComponent implements OnInit {
   @Input() isVisible: boolean;
   @Input() modalAction: string;
   @Input() screenData: any
+  @Input() exerciseTypes: any
   @Output() closeModal:EventEmitter <any> = new EventEmitter()
   @Output() isActionComplete: EventEmitter <any> = new EventEmitter()
 
@@ -33,6 +34,7 @@ export class ActionModalComponent implements OnInit {
     /* form init*/
     this.actionForm = this.fb.group({
       title: [null, Validators.required],
+      type_id: [null, Validators.required],
       description: [null]
     })
 
@@ -68,6 +70,7 @@ export class ActionModalComponent implements OnInit {
       /* payload */
       const payload = {
         "title": this.actionForm.controls['title'].value,
+        "type_id": this.actionForm.controls['type_id'].value,
         "description": description,
         "id": id
       }
@@ -85,14 +88,11 @@ export class ActionModalComponent implements OnInit {
         const resObj = Object.values(res);
         if(resObj[1] == 201){
           this.message.success(resObj[3], {nzDuration: 5000})
-          this.isBtnPressed = false
           this.isActionComplete.emit(true)
           this.handleCancel()
         }
       }
-      else{
-        this.isBtnPressed = false
-      }
+      this.isBtnPressed = false
 
     })
   }
@@ -101,14 +101,16 @@ export class ActionModalComponent implements OnInit {
     /* add screen */
     updateReadingScreen(payload: any){
       this.screenService.updateReadingScreen(payload).subscribe((res) => {
-        console.log("screen action ==> ",res)
-        const resObj = Object.values(res);
-        if(resObj[1] == 200){
-          this.message.success(resObj[3], {nzDuration: 5000})
-          this.isBtnPressed = false
-          this.isActionComplete.emit(true)
-          this.handleCancel()
+        if(res != -1){
+          console.log("screen action ==> ",res)
+          const resObj = Object.values(res);
+          if(resObj[1] == 200){
+            this.message.success(resObj[3], {nzDuration: 5000})
+            this.isActionComplete.emit(true)
+            this.handleCancel()
+          }
         }
+        this.isBtnPressed = false
       })
     }
 

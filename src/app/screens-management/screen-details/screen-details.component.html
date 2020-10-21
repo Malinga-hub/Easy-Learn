@@ -11,6 +11,7 @@
   <nz-descriptions nzBordered >
     <nz-descriptions-item nzTitle="Description">{{screenData.description}}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Data Elements">{{dataElementRecords}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Type">{{getType(screenData.type_id)}}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Date Created">{{screenData.createdAt | date: "d MMM y"}} </nz-descriptions-item>
   </nz-descriptions>
 </nz-card>

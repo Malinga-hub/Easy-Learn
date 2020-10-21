@@ -6,8 +6,8 @@
     <nz-page-header-title>{{screen.title}}</nz-page-header-title>
     <!-- add btn -->
     <nz-page-header-extra>
-      <button nz-button nzType="primary" (click)="showModal('Add', {})">Add Element <i nz-icon nzType="plus" nzTheme="outline"></i></button>
-      <button nz-button nzType="default" (click)="reloadPage()" [nzLoading]="isReloading">Reload <i nz-icon nzType="reload" nzTheme="outline"></i></button>
+      <button nz-button class="greenBtn" (click)="showModal('Add', {})">Add Element <i nz-icon nzType="plus" nzTheme="outline"></i></button>
+      <button nz-button nzType="primary" nzGhost (click)="reloadPage()" [nzLoading]="isReloading">Reload <i nz-icon nzType="reload" nzTheme="outline"></i></button>
     </nz-page-header-extra>
     <!-- screen stats -->
     <nz-page-header-content>
@@ -24,13 +24,22 @@
 
   <!-- data elements -->
   <nz-spin [nzSpinning]="!isDataLoaded">
-    <nz-card [nzExtra]="btnActions">
-        <div nz-card-grid [ngStyle]="gridStyle" *ngFor="let data of dataElements" class="clickable" (click)="showModal('Update', data)">{{data.value}}</div>
-    </nz-card>
-    <ng-template #btnActions>
-      <button nz-button nzType="default" (click)="showTimerModal()" style="margin-right: 10px;" class="green-btn">Start</button>
-      <button nz-button nzType="default" (click)="stopTimer()" [nzLoading]="isStop" class="red-btn">Stop</button>
-    </ng-template>
+    <div *ngIf="dataElementRecords > 0">
+      <nz-card [nzExtra]="btnActions">
+          <div nz-card-grid [ngStyle]="gridStyle" *ngFor="let data of dataElements" class="clickable" (click)="showModal('Update', data)">{{data.value}}</div>
+      </nz-card>
+      <ng-template #btnActions>
+        <button nz-button nzType="default" nzGhost (click)="showTimerModal()" style="margin-right: 10px;" class="green-btn">Start</button>
+        <button nz-button nzType="default" nzGhost (click)="stopTimer()" [nzLoading]="isStop" class="red-btn">Stop</button>
+      </ng-template>
+    </div>
+
+    <!-- if result empty -->
+    <div *ngIf="dataElementRecords == 0">
+      <nz-card [nzHoverable]="'true'">
+        <nz-empty nzNotFoundImage="simple"></nz-empty>
+      </nz-card>
+    </div>
   </nz-spin>
 
 <!-- modal element -->

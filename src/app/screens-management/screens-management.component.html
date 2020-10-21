@@ -3,11 +3,11 @@
 <nz-card nzHoverable>
 <nz-page-header  class="site-page-header">
   <!-- title -->
-  <nz-page-header-title>Exercises</nz-page-header-title>
+  <nz-page-header-title>Exercise Management</nz-page-header-title>
   <!-- add btn -->
   <nz-page-header-extra>
-    <button nz-button nzType="primary" (click)="showActionModal('Add', {})">Add <i nz-icon nzType="plus" nzTheme="outline"></i></button>
-    <button nz-button nzType="default" (click)="reloadPage()" [nzLoading]="!isReloaded">Reload <i nz-icon nzType="reload" nzTheme="outline"></i></button>
+    <button nz-button class="greenBtn" nzGhost (click)="showActionModal('Add', {})">Add <i nz-icon nzType="plus" nzTheme="outline"></i></button>
+    <button nz-button nzType="primary" nzGhost (click)="reloadPage()" [nzLoading]="!isReloaded">Reload <i nz-icon nzType="reload" nzTheme="outline"></i></button>
   </nz-page-header-extra>
   <!-- screen stats -->
   <nz-page-header-content>
@@ -26,6 +26,7 @@
     <tr>
       <th>Ttitle</th>
       <th>Description</th>
+      <th>Type</th>
       <th>Date Created</th>
       <th>Actions</th>
     </tr>
@@ -36,6 +37,8 @@
       <td (click)="screenDetails(data)" class="clickable">{{data.title}}</td>
       <!-- description -->
       <td (click)="screenDetails(data)" class="clickable">{{data.description}}</td>
+      <!-- type -->
+      <td>{{getType(data.type_id)}}</td>
       <!-- date -->
       <td>{{data.createdAt | date: "d MMM y"}}</td>
       <td>
@@ -63,6 +66,7 @@
   [isVisible]="isActionModal"
   [modalAction]="screenModalAction"
   [screenData]="actionModalData"
+  [exerciseTypes]="exerciseTypes"
   (closeModal)="closeActionModal($event)"
   (isActionComplete)="isActionComplete($event)"
 ></app-action-modal>

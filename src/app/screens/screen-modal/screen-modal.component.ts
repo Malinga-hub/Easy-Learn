@@ -51,7 +51,7 @@ export class ScreenModalComponent implements OnInit {
 
           /* paylaod */
     const payload = {
-      "readingScreenId": this.screenId,
+      "exercise_id": this.screenId,
       "value": this.elementForm.controls['value'].value,
       "id": this.dataElement.id
     }
