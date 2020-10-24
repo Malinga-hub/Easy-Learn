@@ -23,15 +23,12 @@
   <nz-table #dataElementData [nzData]="dataElements"  [nzPageSize]="10"[nzLoading]="!isDataLoaded">
     <thead>
       <tr>
-        <th>Exercise</th>
         <th>Element</th>
         <th>Date Created</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of dataElementData.data">
-        <!-- title -->
-        <td>{{screenData.title}}</td>
         <!-- value-->
         <td>{{data.value}}</td>
         <!-- date -->

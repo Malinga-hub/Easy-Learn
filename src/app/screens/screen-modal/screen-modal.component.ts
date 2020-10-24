@@ -20,6 +20,7 @@ export class ScreenModalComponent implements OnInit {
 
   /* values and bools */
   isBtnPressed: boolean = false
+  isDeleting: boolean = false
 
   elementForm: FormGroup
 
@@ -63,8 +64,29 @@ export class ScreenModalComponent implements OnInit {
   }
 
   /* handle delete */
-  handleDelete(){
+  handleDelete(id: number){
     console.log("deleting element...")
+    this.isDeleting = true
+
+    const payload = {
+      "id": id,
+      "exercise_id": this.screenId
+    }
+
+    /* delete  */
+    this.elementService.deleteDataElement(payload).subscribe((res) => {
+      if(res != -1){
+        const resObj = Object.values(res)
+        this.message.success(resObj[4], {nzDuration: 5000})
+        setTimeout(() => {
+          this.isDeleting = false
+          this.handleCancel()
+          this.elementCreated.emit(true)
+        }, 500)
+
+      }
+    })
+
   }
 
   /* close modal */

@@ -14,7 +14,8 @@
       <nz-row nzType="flex">
         <nz-statistic nzTitle="Total Records" [nzValue]="dataElementRecords" style="margin-right: 20px;"></nz-statistic>
         <!-- count down -->
-        <nz-countdown [nzValue]="timerValue" [nzTitle]="'Time Left (HH:mm:ss)'"  [nzFormat]="'HH:mm:ss'" (nzCountdownFinish)="countDownDone()" ></nz-countdown>
+        <nz-countdown [nzValue]="timerValue" [nzTitle]="'Time Left (HH:mm:ss)'"  [nzFormat]="'HH:mm:ss'" (nzCountdownFinish)="countDownDone()" *ngIf="showTimer"></nz-countdown>
+        <nz-statistic nzTitle="Time Left" nzValue="00:00:00" style="margin-right: 20px;" *ngIf="!showTimer"></nz-statistic>
       </nz-row>
     </nz-page-header-content>
   </nz-page-header>
@@ -25,13 +26,97 @@
   <!-- data elements -->
   <nz-spin [nzSpinning]="!isDataLoaded">
     <div *ngIf="dataElementRecords > 0">
-      <nz-card [nzExtra]="btnActions">
-          <div nz-card-grid [ngStyle]="gridStyle" *ngFor="let data of dataElements" class="clickable" (click)="showModal('Update', data)">{{data.value}}</div>
-      </nz-card>
+      <!-- if letter identification -->
+      <nz-card [nzExtra]="btnActions" *ngIf="screen.type_id == 1">
+        <nz-spin [nzSpinning]="isChangingSeenStatus">
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="4" *ngFor="let data of dataElements | paginate: pageConfig">
+            <nz-card [nzActions]="[checkSeen, checkUnseen]" style="margin-bottom: 20px;cursor: pointer;" [nzHoverable]="'true'">
+              <nz-card-meta [nzTitle]="cardTitle" [nzDescription]="elementStatus" class="clickable" (click)="showModal('Update', data)"></nz-card-meta>
+            </nz-card>
+            <ng-template #cardTitle>
+              <p style=" text-align: center;color: rgb(37 36 74 / 90%);"><strong>
+                <span *ngIf="isSeen(data.id)" style="color: #18a301;">seen</span>
+                <span *ngIf="!isSeen(data.id)" style="color: #ff4d4f;">not seen</span>
+              </strong></p>
+            </ng-template>
+            <ng-template #elementStatus>
+              <p style=" text-align: center; font-size: 50px;color: rgb(37 36 74 / 68%);"><strong>{{data.value}}</strong></p>
+            </ng-template>
+            <ng-template #checkSeen>
+              <i nz-icon nzType="check" style="color: #18a301;" (click)="seenStatus(data.id, 'add')"></i>
+            </ng-template>
+            <ng-template #checkUnseen>
+              <i nz-icon nzType="close" style="color: #ff4d4f" (click)="seenStatus(data.id, 'remove')"></i>
+            </ng-template>
+          </div>
+        </div>
+      </nz-spin>
+    </nz-card>
+
+      <!-- if words reading-->
+      <nz-card [nzExtra]="btnActions" *ngIf="screen.type_id == 2">
+        <nz-spin [nzSpinning]="isChangingSeenStatus">
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="8" *ngFor="let data of dataElements | paginate: pageConfig">
+            <nz-card [nzActions]="[checkSeen, checkUnseen]" style="margin-bottom: 20px;cursor: pointer;" [nzHoverable]="'true'">
+              <nz-card-meta [nzTitle]="cardTitle" [nzDescription]="elementStatus" class="clickable" (click)="showModal('Update', data)"></nz-card-meta>
+            </nz-card>
+            <ng-template #cardTitle>
+              <p style=" text-align: center;color: rgb(37 36 74 / 90%);"><strong>
+                <span *ngIf="isSeen(data.id)" style="color: #18a301;">seen</span>
+                <span *ngIf="!isSeen(data.id)" style="color: #ff4d4f;">not seen</span>
+              </strong></p>
+            </ng-template>
+            <ng-template #elementStatus>
+              <p style=" text-align: center; font-size: 50px;color: rgb(37 36 74 / 68%);"><strong>{{data.value}}</strong></p>
+            </ng-template>
+            <ng-template #checkSeen>
+              <i nz-icon nzType="check" style="color: #18a301;" (click)="seenStatus(data.id, 'add')"></i>
+            </ng-template>
+            <ng-template #checkUnseen>
+              <i nz-icon nzType="close" style="color: #ff4d4f" (click)="seenStatus(data.id, 'remove')"></i>
+            </ng-template>
+          </div>
+        </div>
+      </nz-spin>
+    </nz-card>
+      <!-- if oral comprehension -->
+      <nz-card [nzExtra]="btnActions" *ngIf="screen.type_id == 3">
+        <nz-spin [nzSpinning]="isChangingSeenStatus">
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="24" *ngFor="let data of dataElements | paginate: pageConfig">
+            <nz-card [nzActions]="[checkSeen, checkUnseen]" style="margin-bottom: 20px;cursor: pointer;" [nzHoverable]="'true'">
+              <nz-card-meta [nzTitle]="cardTitle" [nzDescription]="elementStatus" class="clickable" (click)="showModal('Update', data)"></nz-card-meta>
+            </nz-card>
+            <ng-template #cardTitle>
+              <p style=" text-align: center;color: rgb(37 36 74 / 90%);"><strong>
+                <span *ngIf="isSeen(data.id)" style="color: #18a301;">seen</span>
+                <span *ngIf="!isSeen(data.id)" style="color: #ff4d4f;">not seen</span>
+              </strong></p>
+            </ng-template>
+            <ng-template #elementStatus>
+              <p style=" text-align: center; font-size: 50px;color: rgb(37 36 74 / 68%);"><strong>{{data.value}}</strong></p>
+            </ng-template>
+            <ng-template #checkSeen>
+              <i nz-icon nzType="check" style="color: #18a301;" (click)="seenStatus(data.id, 'add')"></i>
+            </ng-template>
+            <ng-template #checkUnseen>
+              <i nz-icon nzType="close" style="color: #ff4d4f" (click)="seenStatus(data.id, 'remove')"></i>
+            </ng-template>
+          </div>
+        </div>
+      </nz-spin>
+    </nz-card>
       <ng-template #btnActions>
+        <button nz-button nzType="primary" nzGhost (click)="isStatisTic=true" style="margin-right: 10px;">Results</button>
         <button nz-button nzType="default" nzGhost (click)="showTimerModal()" style="margin-right: 10px;" class="green-btn">Start</button>
         <button nz-button nzType="default" nzGhost (click)="stopTimer()" [nzLoading]="isStop" class="red-btn">Stop</button>
       </ng-template>
+
+      <!-- pagigination -->
+      <br/>
+      <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
     </div>
 
     <!-- if result empty -->
@@ -81,5 +166,42 @@
       </nz-form-control>
     </nz-form-item>
   </form>
+</nz-modal>
+
+<!-- statistic modal -->
+<nz-modal [nzVisible]="isStatisTic" nzTitle="Assement Results" (nzOnOk)="this.isStatisTic = false" [nzCancelText]="null">
+    <div style="padding: 30px;">
+      <nz-row [nzGutter]="24">
+        <!-- seen -->
+        <nz-col [nzSpan]="12">
+          <nz-card>
+            <nz-statistic
+              [nzValue]="getSeenStats('seen')"
+              [nzTitle]="'Seen'"
+              [nzPrefix]="prefixTplOne"
+              [nzSuffix]="'elements'"
+              [nzValueStyle]="{ color: '#18a301' }"
+            >
+            </nz-statistic>
+            <ng-template #prefixTplOne><i nz-icon nzType="eye"></i></ng-template>
+          </nz-card>
+        </nz-col>
+        <!-- unseen -->
+        <nz-col [nzSpan]="12">
+          <nz-card>
+            <nz-statistic
+              [nzValue]="getSeenStats('unseen')"
+              [nzTitle]="'Not seen'"
+              [nzPrefix]="prefixTplOne"
+              [nzSuffix]="'elements'"
+              [nzValueStyle]="{ color: '#ff4d4f' }"
+            >
+            </nz-statistic>
+            <ng-template #prefixTplOne><i nz-icon nzType="eye"></i></ng-template>
+          </nz-card>
+        </nz-col>
+
+      </nz-row>
+    </div>
 </nz-modal>
 

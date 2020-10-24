@@ -33,11 +33,20 @@ export class ScreenDetailsComponent implements OnInit {
   isReloading: boolean = false
   isTimerModal: boolean = false
   isSettingTimer: boolean = false
+  isChangingSeenStatus: boolean = false
+  showTimer: boolean = false
+  isStatisTic: boolean = false
 
   /* modal values */
   isModal: boolean = false
   action: string;
   dataElement: any
+
+  /* page config */
+  pageConfig: any;
+  intiPage: number = 0;
+
+  seenElements: any = []
 
 
   constructor(private router: Router, private service: DataElementsService, private fb: FormBuilder, private message: NzMessageService) { }
@@ -45,7 +54,10 @@ export class ScreenDetailsComponent implements OnInit {
   ngOnInit(): void {
 
     /* reset timer value */
-    this.timerValue += this.resetTimerValue
+    this.showTimer = false;
+    this.timerValue = Date.now() + (60*this.oneHour);
+
+    this.seenElements = []
 
     /* get data*/
     this.getScreenAndDataElements()
@@ -84,21 +96,13 @@ export class ScreenDetailsComponent implements OnInit {
       this.isDataLoaded = true
       this.isReloading = false
       console.log("data elements ==> ",this.dataElements)
+        /* config page */
+        this.pageConfig = {
+          itemsPerPage:12,
+          currentPage: 1,
+          totalItems: this.dataElementRecords
+        };
     })
-  }
-
-  /* start timer */
-  startTimer(){
-    /* set bool */
-    this.isStart = true
-
-    /* delay timer bool */
-    setTimeout(() => {
-      this.timerValue =   Date.now() + 1000 * 60 * 60;
-      this.isStart = false
-    }, 1000)
-
-    console.log("timer value ==> ", this.timerValue)
   }
 
   /* stop timer */
@@ -108,8 +112,9 @@ export class ScreenDetailsComponent implements OnInit {
 
       /* delay timer bool */
       setTimeout(() => {
-        this.timerValue = Date.now() + 1000;
+        this.timerValue = Date.now() + (60*this.oneHour);
         this.isStop= false
+        this.showTimer = false
       }, 1000)
     console.log("timer value ==> ", this.timerValue)
   }
@@ -148,7 +153,7 @@ export class ScreenDetailsComponent implements OnInit {
     this.isDataLoaded = true
     this.isReloading = true;
 
-    this.stopTimer()
+    this.timerValue = Date.now() + 1000;
     this.getDataElememts()
   }
 
@@ -170,6 +175,7 @@ export class ScreenDetailsComponent implements OnInit {
       this.isSettingTimer = false
       this.isTimerModal = false
       this.timerValue+=hour+min+sec
+      this.showTimer = true;
       this.message.success("Exercise started", {nzDuration: 2500})
     }, 500)
 
@@ -187,10 +193,59 @@ export class ScreenDetailsComponent implements OnInit {
 
   /* countdown done */
   countDownDone(){
-    this.timerValue = Date.now() + 1000
-    //this.message.success("Exercise Finished.", {nzDuration: 2500})
+    this.showTimer=false
+    this.timerValue = Date.now() + (60*this.oneHour)
+    this.message.success("Exercise Finished.", {nzDuration: 2500})
   }
 
+    /* page change */
+    pageChanged(page: any){
+      console.log("page changed: ",page)
+      this.pageConfig.currentPage = page;
+    }
+
+    /* seen status */
+    isSeen(element_id: any){
+      const result = this.seenElements.filter((value)=>{
+        return value == element_id
+      })
+
+      if(result[0] != null){
+        return true;
+      }
+      else{
+        return false
+      }
+    }
+
+    /* set seen status */
+    seenStatus(element_id: number, action: string){
+
+      this.isChangingSeenStatus = true
+      if(action == 'add'){
+        this.seenElements.push(element_id)
+      }
+      else if(action == 'remove'){
+        this.seenElements  = this.seenElements.filter((value) => {
+          return value != element_id
+        })
+      }
+
+      setTimeout(() => {
+        this.isChangingSeenStatus = false
+      }, 500)
+    }
+
+    /* get exercies stats */
+    getSeenStats(action: string){
+
+      if(action == 'seen'){
+        return this.seenElements.length
+      }
+      else if(action == 'unseen'){
+        return this.dataElementRecords - this.seenElements.length
+      }
+    }
     /* styles */
     gridStyle = {
       width: '25%',
