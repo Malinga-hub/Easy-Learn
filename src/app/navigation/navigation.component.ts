@@ -29,7 +29,7 @@ export class NavigationComponent implements OnInit {
     this.shareService.authStateObservable.subscribe((res) => {
       console.log("auth state => ",res)
       this.isAuthVisible = res
-    })
+    }) 
   }
 
   /* show auth */
