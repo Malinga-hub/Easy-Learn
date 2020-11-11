@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ScreensManagementService} from '../services/screens-management.service'
 import { NzMessageService } from 'ng-zorro-antd/message';
 import {Router} from '@angular/router'
+import { ShareableDataService } from '../services/shareable-data.service';
 
 @Component({
   selector: 'app-screens-management',
@@ -25,13 +26,25 @@ export class ScreensManagementComponent implements OnInit {
 
   exerciseTypes: any
 
+  currentUser: any = JSON.parse(localStorage.getItem("user_data"))
 
-  constructor(private service: ScreensManagementService, private message: NzMessageService, private router: Router) { }
+
+  constructor(private service: ScreensManagementService, private message: NzMessageService, private router: Router, private shareService: ShareableDataService) { }
 
   ngOnInit(): void {
 
-    /* get all reading screens */
-    this.getAllReadingScreens();
+    switch(this.currentUser == null){
+      case true:
+        this.shareService.changeAuthState(true);
+        this.isDataLoaded = true;
+        this.isReloaded = true
+        break;
+      case false:
+        /* get all reading screens */
+        this.getAllReadingScreens();
+        break;
+    }
+
   }
 
   /* get all screens */

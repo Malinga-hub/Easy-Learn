@@ -17,19 +17,24 @@ export class AuthService {
 
   /* login */
   login(payload: any){
-    return this.http.post(`${BASE_URL}/users/login.php`, payload, {headers: this.headers}).pipe(
-      retry(3),
-      catchError((res) => {
-        const resObj = Object.values(res.error)
-        if(resObj[1] != 500){
-          this.message.error(resObj[2].toString(), {nzDuration: 5000})
-          return [-1]
-        }
-        else{
-          return this.router.navigateByUrl('/connectionFailed')
-        }
-      })
-    )
+    return this.http.post(`${BASE_URL}/users/login.php`, payload, {headers: this.headers})
+    // .pipe(
+    //   retry(3),
+    //   catchError((res) => {
+    //     const resObj = Object.values(res.error)
+    //     if(resObj[1] != 500){
+    //       this.message.error(resObj[2].toString(), {nzDuration: 5000})
+    //       return [-1]
+    //     }
+    //     else{
+    //       return this.router.navigateByUrl('/connectionFailed')
+    //     }
+    //   })
+    // )
+  }
+
+  regitser(payload: any){
+    return this.http.post(`${BASE_URL}/users/register.php`, payload, {headers: this.headers});
   }
 
 

@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {AuthService} from '../services/auth.service'
-import {FormBuilder, FormGroup, Validators} from '@angular/forms'
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms'
 import { NzMessageService } from 'ng-zorro-antd/message';
 import jwt_decode from 'jwt-decode'
 import {ShareableDataService} from '../services/shareable-data.service'
 import { Router } from '@angular/router';
+import { APP_URL } from '../config/appConfig';
 
 @Component({
   selector: 'app-login',
@@ -13,13 +14,12 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  /* inputs */
- @Input() isVisible: boolean;
-
   /* set bools and values */
   isLogginIn: boolean =false
-
+  isRegistering: boolean = false
+  @Input() isVisible: boolean;
   loginForm: FormGroup
+  registerForm: FormGroup
 
   constructor(private service: AuthService, private fb: FormBuilder,
     private message: NzMessageService, private shareService: ShareableDataService, private router: Router) { }
@@ -27,8 +27,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
 
     /* default bool*/
-   this.shareService.authStateObservable.subscribe((res) => {
-     console.log("visible state ==> ",res)
+   this.shareService.authStateObs.subscribe((res) => {
      this.isVisible = res
    })
 
@@ -36,6 +35,15 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       "email": [null, [Validators.required, Validators.email]],
       "password": [null, Validators.required]
+    })
+
+    /* init register form */
+    this.registerForm  = this.fb.group({
+      "username": [null, Validators.required],
+      "email": [null, [Validators.required, Validators.email]],
+      "password": [null, Validators.required],
+      "confirmPassword": [null, [Validators.required, this.confirmationValidator]],
+
     })
   }
 
@@ -66,22 +74,36 @@ export class LoginComponent implements OnInit {
             const token = resObj[2]
             const userData = jwt_decode(token).data
             /* set localstorage items */
-            localStorage.setItem('token', JSON.stringify(token))
-            localStorage.setItem('userData', JSON.stringify(userData))
+            this.shareService.changeAuthState(true)
+            localStorage.setItem('user_token', JSON.stringify(token))
+            localStorage.setItem('user_data', JSON.stringify(userData))
             this.message.success(resObj[3], {nzDuration: 2500})
 
             setTimeout(() => {
               this.isLogginIn = false
               this.shareService.changeAuthState(false)
-              this.router.navigate(['/screens-management'])
-            }, 500)
+              window.location.reload()
+            }, 100)
         }
-        else{
           this.isLogginIn = false
-        }
       })
 
     }
+  }
+
+  /* confirm password */
+  confirmationValidator = (control: FormControl): { [s: string]: boolean } => {
+    if (!control.value) {
+      return { required: true };
+    } else if (control.value !== this.registerForm.controls.password.value) {
+      return { confirm: true, error: true };
+    }
+    return {};
+  };
+
+  updateConfirmValidator(): void {
+    /** wait for refresh value */
+    Promise.resolve().then(() => this.registerForm.controls['confirmPassword'].updateValueAndValidity());
   }
 
   /* drawer options */
@@ -91,6 +113,37 @@ export class LoginComponent implements OnInit {
 
   closeAuth(): void {
     this.shareService.changeAuthState(false)
+  }
+
+  /* register */
+  register(){
+
+      /* show errors if form invalid */
+      for (const i in this.registerForm.controls) {
+        this.registerForm.controls[i].markAsDirty();
+        this.registerForm.controls[i].updateValueAndValidity();
+      }
+
+      if(!this.registerForm.invalid){
+        this.isRegistering = true
+        const payload = {
+          "username": this.registerForm.controls['username'].value,
+          "email": this.registerForm.controls['email'].value,
+          "password": this.registerForm.controls['password'].value
+        }
+
+        this.service.regitser(payload).subscribe((res) => {
+          console.log("response ==> ",res)
+          const resObj = Object.values(res)
+          if(resObj[1] == 200){
+            this.message.success(resObj[2]+".Please login", {nzDuration: 2500})
+            setTimeout(() => {
+              window.location.replace(APP_URL)
+            }, 1000)
+          }
+          this.isRegistering =false
+        })
+      }
   }
 
 }

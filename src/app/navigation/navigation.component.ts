@@ -1,3 +1,4 @@
+import { BASE_URL, APP_URL } from './../config/appConfig';
 import { Component, OnInit, Output } from '@angular/core';
 import {ShareableDataService} from '../services/shareable-data.service'
 import {Router} from '@angular/router'
@@ -22,14 +23,14 @@ export class NavigationComponent implements OnInit {
   ngOnInit(): void {
 
     /* user data */
-    this.userData = JSON.parse(localStorage.getItem('userData'))
+    this.userData = JSON.parse(localStorage.getItem('user_data'))
     console.log("user data ==>", this.userData)
 
     /* check auth state */
-    this.shareService.authStateObservable.subscribe((res) => {
+    this.shareService.authStateObs.subscribe((res) => {
       console.log("auth state => ",res)
       this.isAuthVisible = res
-    }) 
+    })
   }
 
   /* show auth */
@@ -45,13 +46,12 @@ export class NavigationComponent implements OnInit {
   /* logout */
   logout(){
     /* remove localstorage items */
-    localStorage.removeItem('token')
-    localStorage.removeItem('userData')
+    localStorage.removeItem('user_token')
+    localStorage.removeItem('user_data')
     localStorage.removeItem('exercise')
     localStorage.removeItem('screenData')
-/* set user data to null */
-this.userData = null
-this.router.navigateByUrl('')
+    /* set user data to null */
+    window.location.replace(APP_URL);
   }
 
   isAuth(){

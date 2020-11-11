@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ScreensService} from '../services/screens.service'
+import {ShareableDataService} from '../services/shareable-data.service'
 import {ScreensManagementService} from '../services/screens-management.service'
 import {Router} from '@angular/router'
 
@@ -20,15 +21,28 @@ export class ScreensComponent implements OnInit {
   isDataLoaded: boolean = false
   isReloading = false;
 
-  constructor(private service: ScreensService, private router: Router, private managementService: ScreensManagementService) { }
+  currentUser: any;
+
+  constructor(private service: ScreensService, private router: Router, private managementService: ScreensManagementService,private shareService: ShareableDataService) { }
 
   ngOnInit(): void {
 
-    /* get all screens */
-    this.getAllScreens()
+    this.currentUser = JSON.parse(localStorage.getItem("user_data"));
 
-    /* get execise types */
-    this.getExerciseTypes()
+    console.log("current user ==> ",this.currentUser)
+
+    switch(this.currentUser == null){
+      case true:
+        this.shareService.changeAuthState(true);
+        this.isDataLoaded= true
+        this.isReloading = false
+        break;
+      case false:
+        this.getAllScreens()
+        this.getExerciseTypes()
+        break;
+    }
+
   }
 
   /* get all screens */
