@@ -164,7 +164,7 @@ export class LoginComponent implements OnInit {
             this.message.success(resObj[3]+"Please login", {nzDuration: 2500})
             setTimeout(() => {
               window.location.replace(APP_URL)
-            }, 1000)
+            }, 2000)
           }
           else{
             this.message.error(resObj[2].toString(), {nzDuration: 2500})
