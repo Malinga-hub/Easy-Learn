@@ -5,14 +5,18 @@
     <ul nz-menu nzTheme="dark" nzMode="horizontal">
       <li nz-menu-item (click)="navigateByRoute('/screens')">Assesments</li>
       <li nz-menu-item (click)="navigateByRoute('/screens-management')" *ngIf="userData != null">Assesment Management</li>
-      <li nz-menu-item>About</li>
+      <!-- <li nz-menu-item>About</li> -->
       <li nz-menu-item (click)="isAuthVisible=true" *ngIf="userData == null">Login/Register</li>
+      <li nz-menu-item (click)="isAuthVisible=true" *ngIf="userData != null">Settings</li>
       <li nz-menu-item (click)="logout()" *ngIf="userData != null">Logout</li>
     </ul>
   </nz-header>
   <nz-content>
     <nz-breadcrumb>
-      <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <span *ngIf="userData == null">Please login</span>
+        <span *ngIf="userData != null">Welcome, {{userData.username}} ({{userData.email}})</span>
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
     <div class="inner-content">
       <router-outlet></router-outlet>

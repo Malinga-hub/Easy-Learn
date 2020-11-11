@@ -3,13 +3,13 @@
 [nzMaskClosable]="false"
 [nzWidth]="350"
 [nzVisible]="isVisible"
-nzTitle="Login/Register"
+[nzTitle]="getTitle()"
 (nzOnClose)="closeAuth()"
 [nzPlacement]="'right'"
 >
 <nz-tabset>
   <!-- login -->
-  <nz-tab nzTitle="Login">
+  <nz-tab nzTitle="Login" *ngIf="currentUser == null">
     <form nz-form [formGroup]="loginForm" class="login-form">
       <!--  email -->
       <nz-form-item>
@@ -33,15 +33,15 @@ nzTitle="Login/Register"
             <span>Remember me</span>
           </label>
         </div>
-        <div nz-col [nzSpan]="12">
+        <!-- <div nz-col [nzSpan]="12">
           <a class="login-form-forgot">Forgot password</a>
-        </div>
+        </div> -->
       </div>
       <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'" (click)="login()" [nzLoading]="isLogginIn">Log in</button>
     </form>
   </nz-tab>
   <!-- register now -->
-  <nz-tab nzTitle="Register">
+  <nz-tab nzTitle="Register" *ngIf="currentUser == null">
     <form nz-form [formGroup]="registerForm" class="login-form">
       <!-- username -->
       <nz-form-item>
@@ -87,6 +87,48 @@ nzTitle="Login/Register"
       <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'" (click)="register()" [nzLoading]="isRegistering">Sign Up</button>
     </form>
   </nz-tab>
+  <!-- change password -->
+  <nz-tab nzTitle="Change Password" *ngIf="currentUser != null">
+    <form nz-form [formGroup]="changePasswordForm" class="login-form">
+      <!-- password -->
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your password!">
+          <nz-input-group nzPrefixIcon="lock">
+          <input nz-input type="password" id="password" formControlName="password" placeholder="New Password"
+          (ngModelChange)="updateConfirmValidator2()" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- password confirm -->
+      <nz-form-item>
+        <nz-form-control [nzErrorTip]="errorTpl">
+          <nz-input-group nzPrefixIcon="lock">
+          <input nz-input type="password" formControlName="confirmPassword" id="confirmPassword" placeholder="Confirm Password" />
+        </nz-input-group>
+          <ng-template #errorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Please confirm your password!
+            </ng-container>
+            <ng-container *ngIf="control.hasError('confirm')">
+              Passwords do not match
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'"
+      (click)="changePassword()" [nzLoading]="isChangingPassword">Confirm</button>
+    </form>
+  </nz-tab>
+  <!-- delete account -->
+  <nz-tab nzTitle="Delete Account" *ngIf="currentUser != null">
+    <p><strong>Note</strong><br>All data created using this account will deleted.</p>
+    <button nz-button class="login-form-button login-form-margin" [nzType]="'danger'"
+    nz-popconfirm
+    nzPopconfirmTitle="Are you sure ?"
+    (nzOnConfirm)="confirmDelete()"
+    nzPopconfirmPlacement="bottom" [nzLoading]="isDeletingAccount">Delete</button>
+  </nz-tab>
+
 </nz-tabset>
 </nz-drawer>
 

@@ -20,6 +20,11 @@ export class LoginComponent implements OnInit {
   @Input() isVisible: boolean;
   loginForm: FormGroup
   registerForm: FormGroup
+  changePasswordForm: FormGroup
+  isChangingPassword: boolean = false
+  isDeletingAccount: boolean = false
+
+  currentUser: any = JSON.parse(localStorage.getItem("user_data"))
 
   constructor(private service: AuthService, private fb: FormBuilder,
     private message: NzMessageService, private shareService: ShareableDataService, private router: Router) { }
@@ -45,6 +50,12 @@ export class LoginComponent implements OnInit {
       "confirmPassword": [null, [Validators.required, this.confirmationValidator]],
 
     })
+
+    /* init change password */
+    this.changePasswordForm = this.fb.group({
+      "password": [null, Validators.required],
+      "confirmPassword": [null, [Validators.required, this.confirmationValidator2]],
+    })
   }
 
   /* login */
@@ -69,23 +80,21 @@ export class LoginComponent implements OnInit {
 
       /* login */
       this.service.login(payload).subscribe((res) => {
-        if(res != -1){
-            const resObj = Object.values(res)
+        const resObj = Object.values(res)
+        if(resObj[1] == 200){
             const token = resObj[2]
             const userData = jwt_decode(token).data
-            /* set localstorage items */
-            this.shareService.changeAuthState(true)
             localStorage.setItem('user_token', JSON.stringify(token))
             localStorage.setItem('user_data', JSON.stringify(userData))
-            this.message.success(resObj[3], {nzDuration: 2500})
-
+            this.message.success(resObj[3].toString(), {nzDuration: 2500})
             setTimeout(() => {
-              this.isLogginIn = false
-              this.shareService.changeAuthState(false)
               window.location.reload()
-            }, 100)
+            }, 1000)
         }
-          this.isLogginIn = false
+        else{
+          this.message.error(resObj[2].toString(), {nzDuration: 2500})
+        }
+        this.isLogginIn = false
       })
 
     }
@@ -101,10 +110,26 @@ export class LoginComponent implements OnInit {
     return {};
   };
 
+    /* confirm password */
+    confirmationValidator2 = (control: FormControl): { [s: string]: boolean } => {
+      if (!control.value) {
+        return { required: true };
+      } else if (control.value !== this.changePasswordForm.controls.password.value) {
+        return { confirm: true, error: true };
+      }
+      return {};
+    };
+
   updateConfirmValidator(): void {
     /** wait for refresh value */
     Promise.resolve().then(() => this.registerForm.controls['confirmPassword'].updateValueAndValidity());
   }
+
+  updateConfirmValidator2(): void {
+    /** wait for refresh value */
+    Promise.resolve().then(() => this.changePasswordForm.controls['confirmPassword'].updateValueAndValidity());
+  }
+
 
   /* drawer options */
   openAuth(): void {
@@ -136,14 +161,95 @@ export class LoginComponent implements OnInit {
           console.log("response ==> ",res)
           const resObj = Object.values(res)
           if(resObj[1] == 200){
-            this.message.success(resObj[2]+".Please login", {nzDuration: 2500})
+            this.message.success(resObj[3]+"Please login", {nzDuration: 2500})
             setTimeout(() => {
               window.location.replace(APP_URL)
             }, 1000)
+          }
+          else{
+            this.message.error(resObj[2].toString(), {nzDuration: 2500})
           }
           this.isRegistering =false
         })
       }
   }
 
+  /* change password */
+  changePassword(){
+
+
+      /* show errors if form invalid */
+      for (const i in this.changePasswordForm.controls) {
+        this.changePasswordForm.controls[i].markAsDirty();
+        this.changePasswordForm.controls[i].updateValueAndValidity();
+      }
+
+      if(!this.changePasswordForm.invalid){
+        this.isChangingPassword = true
+        const payload = {
+          "id": this.currentUser.id,
+          "newPassword": this.changePasswordForm.controls['password'].value,
+          "confirmPassword": this.changePasswordForm.controls['confirmPassword'].value
+        }
+
+        this.service.changePassword(payload).subscribe((res) =>{
+          const resObj = Object.values(res)
+          if(resObj[1] == 200){
+            this.message.success(resObj[2].toString(), {nzDuration: 2500})
+            this.shareService.changeAuthState(false)
+          }
+          else{
+            this.message.error(resObj[2].toString(), {nzDuration: 2500})
+          }
+          this.isChangingPassword=false
+        })
+      }
+  }
+
+  /* delete account */
+  deleteAccount(){
+
+    this.isDeletingAccount = true
+    this.service.deleteAccount().subscribe((res)=>{
+      const resObj = Object.values(res)
+      if(resObj[1] == 200){
+        this.message.success(resObj[3].toString(), {nzDuration: 2500})
+        setTimeout(()=>{
+          /* remove localstorage items */
+          this.shareService.changeAuthState(false)
+          localStorage.removeItem('user_token')
+          localStorage.removeItem('user_data')
+          localStorage.removeItem('exercise')
+          localStorage.removeItem('screenData')
+          this.isDeletingAccount = false
+          /* set user data to null */
+          window.location.replace(APP_URL);
+        }, 2000)
+      }
+      else{
+        this.message.error(resObj[3].toString(), {nzDuration: 2500})
+        this.isDeletingAccount = false
+      }
+    })
+  }
+
+  /* confirm delete */
+  confirmDelete(){
+    this.deleteAccount()
+  }
+
+  getTitle(){
+
+    let title = null
+    switch(this.currentUser == null){
+      case true:
+        title = "Login/Register"
+        break;
+      case false:
+        title= "Account Settings"
+        break;
+    }
+
+    return title;
+  }
 }
