@@ -9,11 +9,11 @@
 >
 <nz-tabset>
   <!-- login -->
-  <nz-tab nzTitle="Login" *ngIf="currentUser == null">
+  <nz-tab nzTitle="Login" *ngIf="currentUser == null || isResetPassword">
     <form nz-form [formGroup]="loginForm" class="login-form">
       <!--  email -->
       <nz-form-item>
-        <nz-form-control nzErrorTip="Please input your username!">
+        <nz-form-control nzErrorTip="Please input your email!">
           <nz-input-group nzPrefixIcon="mail">
             <input type="email" nz-input formControlName="email" placeholder="Email" />
           </nz-input-group>
@@ -41,7 +41,7 @@
     </form>
   </nz-tab>
   <!-- register now -->
-  <nz-tab nzTitle="Register" *ngIf="currentUser == null">
+  <nz-tab nzTitle="Register" *ngIf="currentUser == null || isResetPassword">
     <form nz-form [formGroup]="registerForm" class="login-form">
       <!-- username -->
       <nz-form-item>
@@ -87,8 +87,23 @@
       <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'" (click)="register()" [nzLoading]="isRegistering">Sign Up</button>
     </form>
   </nz-tab>
+  <!-- forgot Password -->
+  <nz-tab nzTitle="Forgot Password" *ngIf="!isResetPassword && currentUser == null">
+    <form nz-form [formGroup]="resetForm" class="login-form">
+      <!--  email -->
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your email!">
+          <nz-input-group nzPrefixIcon="mail">
+            <input type="email" nz-input formControlName="email" placeholder="Email" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'"
+      (click)="confirmEmail()" [nzLoading]="isEmailConfirming">Submit</button>
+    </form>
+  </nz-tab>
   <!-- change password -->
-  <nz-tab nzTitle="Change Password" *ngIf="currentUser != null">
+  <nz-tab nzTitle="Change Password" *ngIf="currentUser != null || isResetPassword">
     <form nz-form [formGroup]="changePasswordForm" class="login-form">
       <!-- password -->
       <nz-form-item>
@@ -116,11 +131,13 @@
         </nz-form-control>
       </nz-form-item>
       <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'"
-      (click)="changePassword()" [nzLoading]="isChangingPassword">Confirm</button>
+      (click)="changePassword()" [nzLoading]="isChangingPassword" *ngIf="currentUser != null && !isResetPassword">Confirm</button>
+      <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'"
+      (click)="resetPassword()" [nzLoading]="isChangingPassword" *ngIf="isResetPassword">Confirm</button>
     </form>
   </nz-tab>
   <!-- delete account -->
-  <nz-tab nzTitle="Delete Account" *ngIf="currentUser != null">
+  <nz-tab nzTitle="Delete Account" *ngIf="currentUser != null && !isResetPassword">
     <p><strong>Note</strong><br>All data created using this account will be deleted.</p>
     <button nz-button class="login-form-button login-form-margin" [nzType]="'danger'"
     nz-popconfirm

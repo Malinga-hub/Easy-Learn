@@ -56,5 +56,22 @@ export class AuthService {
     )
   }
 
+  /* get user */
+  getUser(payload: any){
+    return this.http.post(`${BASE_URL}/users/getUser.php`, payload, {headers: this.headers})
+    .pipe(
+      catchError((res)=>{
+        // console.log("res ==> ",res.error)
+        let errorData = res.error
+        return [errorData]
+      })
+    )
+  }
+
+  /* reset password */
+  resetPassword(payload: any){
+    return this.http.post(`${BASE_URL}/users/resetPassword.php`, payload, {headers: this.headers})
+  }
+
 
 }

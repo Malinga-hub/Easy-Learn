@@ -21,8 +21,12 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup
   registerForm: FormGroup
   changePasswordForm: FormGroup
+  resetForm: FormGroup
   isChangingPassword: boolean = false
   isDeletingAccount: boolean = false
+  isResetPassword: boolean = false
+  isEmailConfirming: boolean = false
+
 
   currentUser: any = JSON.parse(localStorage.getItem("user_data"))
 
@@ -55,6 +59,11 @@ export class LoginComponent implements OnInit {
     this.changePasswordForm = this.fb.group({
       "password": [null, Validators.required],
       "confirmPassword": [null, [Validators.required, this.confirmationValidator2]],
+    })
+
+    /* init reset form */
+    this.resetForm = this.fb.group({
+      email: [null, Validators.required]
     })
   }
 
@@ -176,8 +185,6 @@ export class LoginComponent implements OnInit {
 
   /* change password */
   changePassword(){
-
-
       /* show errors if form invalid */
       for (const i in this.changePasswordForm.controls) {
         this.changePasswordForm.controls[i].markAsDirty();
@@ -197,6 +204,7 @@ export class LoginComponent implements OnInit {
           if(resObj[1] == 200){
             this.message.success(resObj[2].toString(), {nzDuration: 2500})
             this.shareService.changeAuthState(false)
+            this.isResetPassword = false
           }
           else{
             this.message.error(resObj[2].toString(), {nzDuration: 2500})
@@ -241,7 +249,7 @@ export class LoginComponent implements OnInit {
   getTitle(){
 
     let title = null
-    switch(this.currentUser == null){
+    switch(this.currentUser == null || this.isResetPassword){
       case true:
         title = "Login/Register"
         break;
@@ -251,5 +259,70 @@ export class LoginComponent implements OnInit {
     }
 
     return title;
+  }
+
+  confirmEmail(){
+
+    /* show errors if form invalid */
+    for (const i in this.resetForm.controls) {
+      this.resetForm.controls[i].markAsDirty();
+      this.resetForm.controls[i].updateValueAndValidity();
+    }
+
+    if(!this.resetForm.invalid){
+      this.isEmailConfirming = true
+      const payload = {
+        "email": this.resetForm.controls['email'].value
+      }
+
+      this.service.getUser(payload).subscribe((res) => {
+
+        const resObj = Object.values(res);
+        if(resObj[1] == 200){
+          this.message.success("Email validation success. Please proceed to reset your password", {nzDuration: 2500})
+          this.currentUser = {
+            "id": Object.values(resObj[2])[0]
+          }
+          console.log("current user id ==> ",this.currentUser)
+          this.isEmailConfirming = false
+          this.isResetPassword = true
+        }
+        else{
+          this.message.error(resObj[2].toString(), {nzDuration: 2500})
+          this.isEmailConfirming = false
+        }
+      })
+    }
+  }
+
+  /* change password */
+  resetPassword(){
+    /* show errors if form invalid */
+    for (const i in this.changePasswordForm.controls) {
+      this.changePasswordForm.controls[i].markAsDirty();
+      this.changePasswordForm.controls[i].updateValueAndValidity();
+    }
+
+    if(!this.changePasswordForm.invalid){
+      this.isChangingPassword = true
+      const payload = {
+        "id": this.currentUser.id,
+        "newPassword": this.changePasswordForm.controls['password'].value,
+        "confirmPassword": this.changePasswordForm.controls['confirmPassword'].value
+      }
+
+      this.service.resetPassword(payload).subscribe((res) =>{
+        const resObj = Object.values(res)
+        if(resObj[1] == 200){
+          this.message.success(resObj[2].toString()+'.Please Login', {nzDuration: 2500})
+          this.isResetPassword = false
+          this.currentUser = null
+        }
+        else{
+          this.message.error(resObj[2].toString(), {nzDuration: 2500})
+        }
+        this.isChangingPassword=false
+      })
+    }
   }
 }
