@@ -43,6 +43,14 @@
   <!-- register now -->
   <nz-tab nzTitle="Register" *ngIf="currentUser == null || isResetPassword">
     <form nz-form [formGroup]="registerForm" class="login-form">
+      <!-- user role -->
+      <nz-form-item>
+        <nz-form-control [nzErrorTip]="'user role is required'">
+          <nz-select nzPlaceHolder="Role" formControlName="role_id">
+            <nz-option *ngFor="let role of userRoles" nzLabel="{{role.role}}" nzValue="{{role.id}}"></nz-option>>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
       <!-- username -->
       <nz-form-item>
         <nz-form-control nzErrorTip="Please input your username!">

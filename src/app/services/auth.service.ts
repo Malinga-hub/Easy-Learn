@@ -73,5 +73,10 @@ export class AuthService {
     return this.http.post(`${BASE_URL}/users/resetPassword.php`, payload, {headers: this.headers})
   }
 
+  // get user roles
+  getUserRoles(){
+    return this.http.post(`${BASE_URL}/user_roles/roles.php`, {}, {headers: this.headers})
+  }
+
 
 }

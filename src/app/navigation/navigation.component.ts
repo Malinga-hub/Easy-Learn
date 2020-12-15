@@ -58,4 +58,16 @@ export class NavigationComponent implements OnInit {
     if(this.userData != null){return true}else{ return false};
   }
 
+  isStudent() {
+    return this.userData.role_id == 3;
+  }
+
+  isTeacher(){
+    return this.userData.role_id == 2;
+  }
+
+  isAdmin(){
+    return this.userData.role_id == 1;
+  }
+
 }

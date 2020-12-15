@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit {
   isDeletingAccount: boolean = false
   isResetPassword: boolean = false
   isEmailConfirming: boolean = false
+  userRoles:any;
 
 
   currentUser: any = JSON.parse(localStorage.getItem("user_data"))
@@ -48,6 +49,7 @@ export class LoginComponent implements OnInit {
 
     /* init register form */
     this.registerForm  = this.fb.group({
+      "role_id": [null, Validators.required],
       "username": [null, Validators.required],
       "email": [null, [Validators.required, Validators.email]],
       "password": [null, Validators.required],
@@ -65,6 +67,9 @@ export class LoginComponent implements OnInit {
     this.resetForm = this.fb.group({
       email: [null, Validators.required]
     })
+
+    // get user roles
+    this.getUserRoles();
   }
 
   /* login */
@@ -161,6 +166,7 @@ export class LoginComponent implements OnInit {
       if(!this.registerForm.invalid){
         this.isRegistering = true
         const payload = {
+          "role_id": this.registerForm.controls['role_id'].value,
           "username": this.registerForm.controls['username'].value,
           "email": this.registerForm.controls['email'].value,
           "password": this.registerForm.controls['password'].value
@@ -324,5 +330,16 @@ export class LoginComponent implements OnInit {
         this.isChangingPassword=false
       })
     }
+  }
+
+  // user roles
+  getUserRoles(){
+    this.service.getUserRoles().subscribe((data)=>{
+      console.log("user roles ==> ", Object.values(data)[3])
+      this.userRoles = Object.values(data)[3];
+      this.userRoles = this.userRoles.filter((value)=>{
+        return value.id != 1
+      })
+    })
   }
 }
